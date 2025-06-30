@@ -23,8 +23,8 @@ export default [
         HTMLDivElement: 'readonly',
         HTMLElement: 'readonly',
         Element: 'readonly',
-        Document: 'readonly',
-        Window: 'readonly',
+        document: 'readonly',
+        window: 'readonly',
       },
     },
     plugins: {
