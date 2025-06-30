@@ -1,6 +1,6 @@
 {
   "name": "@atomic-solutions/react-utils",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React utility components and hooks for Atomic Solutions projects",
   "type": "module",
   "main": "./dist/index.cjs",
