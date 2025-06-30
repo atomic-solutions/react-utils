@@ -140,9 +140,9 @@ const SidebarLinkComponent: React.FC<{
         `}
       >
         <div onClick={handleClick} className="flex items-center gap-3 w-full">
-          {link.icon({ 
-            size: 20, 
-            className: isActive ? 'text-blue-600' : 'text-gray-700' 
+          {link.icon({
+            size: 20,
+            className: isActive ? 'text-blue-600' : 'text-gray-700',
           })}
           {!collapsed && <span>{link.text}</span>}
         </div>
