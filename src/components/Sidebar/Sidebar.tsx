@@ -4,8 +4,13 @@ import React, { useState, createContext, useContext } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 // Types
+export interface IconProps {
+  size: number;
+  className?: string;
+}
+
 export interface SidebarLink {
-  icon: React.ComponentType<any>;
+  icon: (props: IconProps) => React.ReactNode;
   text: string;
   path: string;
   onClick?: () => void;
@@ -69,7 +74,7 @@ const useIsMobile = () => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
     return () => window.removeEventListener('resize', checkIsMobile);
@@ -81,7 +86,7 @@ const useIsMobile = () => {
 // Sidebar Toggle Button
 const SidebarToggle: React.FC = () => {
   const { collapsed, setCollapsed } = useSidebar();
-  
+
   return (
     <button
       onClick={() => setCollapsed(!collapsed)}
@@ -104,7 +109,7 @@ const SidebarLinkComponent: React.FC<{
 }> = ({ link, LinkComponent, currentPath }) => {
   const { collapsed } = useSidebar();
   const isActive = currentPath === link.path;
-  
+
   const handleClick = () => {
     if (link.onClick) {
       link.onClick();
@@ -121,20 +126,24 @@ const SidebarLinkComponent: React.FC<{
           }`}
         />
       </div>
-      
+
       <LinkComponent
         href={link.path}
         className={`
           flex items-center h-12 px-4 mx-2 rounded-md font-medium transition-colors
           ${collapsed ? 'justify-center' : 'gap-3'}
-          ${isActive 
-            ? 'bg-blue-50 text-blue-600' 
-            : 'text-gray-700 hover:bg-gray-100'
+          ${
+            isActive
+              ? 'bg-blue-50 text-blue-600'
+              : 'text-gray-700 hover:bg-gray-100'
           }
         `}
       >
         <div onClick={handleClick} className="flex items-center gap-3 w-full">
-          <link.icon size={20} />
+          {link.icon({ 
+            size: 20, 
+            className: isActive ? 'text-blue-600' : 'text-gray-700' 
+          })}
           {!collapsed && <span>{link.text}</span>}
         </div>
       </LinkComponent>
@@ -143,10 +152,10 @@ const SidebarLinkComponent: React.FC<{
 };
 
 // Default Logo Component
-const DefaultLogo: React.FC<{ logo: SidebarProps['logo']; collapsed: boolean }> = ({ 
-  logo, 
-  collapsed 
-}) => {
+const DefaultLogo: React.FC<{
+  logo: SidebarProps['logo'];
+  collapsed: boolean;
+}> = ({ logo, collapsed }) => {
   if (!logo) return null;
 
   if (collapsed && logo.collapsed) {
@@ -159,9 +168,9 @@ const DefaultLogo: React.FC<{ logo: SidebarProps['logo']; collapsed: boolean }> 
 
   return (
     <div className="flex items-center justify-center h-16 p-4">
-      <img 
-        src={logo.src} 
-        alt={logo.alt} 
+      <img
+        src={logo.src}
+        alt={logo.alt}
         className="max-h-full max-w-full object-contain"
       />
     </div>
@@ -169,10 +178,10 @@ const DefaultLogo: React.FC<{ logo: SidebarProps['logo']; collapsed: boolean }> 
 };
 
 // Default Logout Component
-const DefaultLogout: React.FC<{ 
-  onLogout?: () => void; 
-  logoutText?: string; 
-  collapsed: boolean 
+const DefaultLogout: React.FC<{
+  onLogout?: () => void;
+  logoutText?: string;
+  collapsed: boolean;
 }> = ({ onLogout, logoutText = 'Logout', collapsed }) => {
   const [loading, setLoading] = useState(false);
 
@@ -201,7 +210,14 @@ const DefaultLogout: React.FC<{
         {loading ? (
           <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
             <polyline points="16,17 21,12 16,7" />
             <line x1="21" y1="12" x2="9" y2="12" />
@@ -254,8 +270,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Header */}
         <div className="flex flex-col border-b border-gray-200">
           {/* Logo */}
-          {renderLogo ? renderLogo(collapsed) : <DefaultLogo logo={logo} collapsed={collapsed} />}
-          
+          {renderLogo ? (
+            renderLogo(collapsed)
+          ) : (
+            <DefaultLogo logo={logo} collapsed={collapsed} />
+          )}
+
           {/* Toggle Button */}
           <div className="flex justify-end p-2">
             <SidebarToggle />
@@ -279,10 +299,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </nav>
 
           {/* Logout */}
-          {renderLogout ? 
-            renderLogout(collapsed) : 
-            <DefaultLogout onLogout={onLogout} logoutText={logoutText} collapsed={collapsed} />
-          }
+          {renderLogout ? (
+            renderLogout(collapsed)
+          ) : (
+            <DefaultLogout
+              onLogout={onLogout}
+              logoutText={logoutText}
+              collapsed={collapsed}
+            />
+          )}
         </div>
       </aside>
     </SidebarContext.Provider>
