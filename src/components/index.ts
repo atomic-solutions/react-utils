@@ -1,1 +1,1 @@
-export { Button, type ButtonProps } from './Button'
+export { DataTable, Pagination, type PaginationProps } from './DataTable';
